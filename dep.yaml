@@ -1,0 +1,36 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: demo-exporter
+#  annotations:
+#    prometheus.io/scrape: "true"
+#    prometheus.io/port: "8082"
+#    prometheus.io/path: "/metrics"
+#  annotations:
+  labels:
+    role: app
+    app: demo-exporter
+spec:
+  containers:
+    - name: demo-exporter
+      image: harbor-repo.vmware.com/octo_data_platforms/go-demo-exporter:1.1.1
+      ports:
+        - containerPort: 8082
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo-exporter
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8082"
+    prometheus.io/path: "/metrics"
+spec:
+  ports:
+    - name: http
+      port: 8082
+      protocol: TCP
+  selector:
+    app: demo-exporter
+  type: LoadBalancer
